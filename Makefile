@@ -17,7 +17,8 @@ GOMAXPROCS ?= 4
 # Get the project metadata
 GOVERSION := 1.17
 PROJECT := $(CURRENT_DIR:$(GOPATH)/src/%=%)
-OWNER := $(notdir $(patsubst %/,%,$(dir $(PROJECT))))
+#OWNER := $(notdir $(patsubst %/,%,$(dir $(PROJECT))))
+OWNER := djimenezc
 NAME := $(notdir $(PROJECT))
 GIT_COMMIT ?= $(shell git rev-parse --short HEAD)
 VERSION := $(shell awk -F\" '/Version/ { print $$2; exit }' "${CURRENT_DIR}/version/version.go")
@@ -114,16 +115,17 @@ dev:
 
 # dist builds the binaries and then signs and packages them for distribution
 dist:
-ifndef GPG_KEY
-	@echo "==> ERROR: No GPG key specified! Without a GPG key, this release cannot"
-	@echo "           be signed. Set the environment variable GPG_KEY to the ID of"
-	@echo "           the GPG key to continue."
-	@exit 127
-else
+#ifndef GPG_KEY
+#	@echo "==> ERROR: No GPG key specified! Without a GPG key, this release cannot"
+#	@echo "           be signed. Set the environment variable GPG_KEY to the ID of"
+#	@echo "           the GPG key to continue."
+#	@exit 127
+#else
 	@$(MAKE) -f "${MKFILE_PATH}" _cleanup
 	@$(MAKE) -f "${MKFILE_PATH}" -j4 build
-	@$(MAKE) -f "${MKFILE_PATH}" _compress _checksum _sign
-endif
+#	@$(MAKE) -f "${MKFILE_PATH}" _compress _checksum _sign
+	@$(MAKE) -f "${MKFILE_PATH}" _compress _checksum
+#endif
 .PHONY: dist
 
 # Create a docker compile and push target for each container. This will create
